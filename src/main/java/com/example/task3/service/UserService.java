@@ -3,6 +3,8 @@ import com.example.task3.model.User;
 import com.example.task3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,19 +13,31 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     public User createUser(User user) {
         User savedUser = userRepository.save(user);
-        System.out.println("Пользователь создан");
+        System.out.println("юзер " + user.getUsername() + " создан");
         return savedUser;
     }
 
 
-    public Optional<User> getUserById(int id) {
+    public Optional<User> getUserById(Long id) {
+        if (id == null || id <= 0) {
+            System.out.println("айди " + id + " неадекватный братишка");
+            return Optional.empty();
+        }
+
         Optional<User> user = userRepository.findById(id);
-        System.out.println("Пользователь с id" + id + "найден");
+        user.ifPresent(value -> System.out.println("по id " + id +
+                " мы нашли пользователя с именем " +
+                value.getUsername()));
         return user;
     }
 
@@ -35,21 +49,22 @@ public class UserService {
     }
 
 
-    public User updateUser(int id, String username, String mail, int date) {
+    public User updateUser(Long id, String username, String mail, LocalDate date) {
         Optional<User> optionalUser = getUserById(id);
         User user = optionalUser.orElseThrow();
         user.setUsername(username);
         user.setMail(mail);
         user.setDate(date);
-        System.out.println("Пользователь" + user.getUsername()  + "был успешно изменен");
-        return userRepository.save(user);
+
+        User updatedUser = userRepository.save(user);
+        System.out.println("юзер с id " + id + " обновлен");
+        return updatedUser;
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("юзер не найден"));
         System.out.println("удалили: " + user.getUsername());
         userRepository.delete(user);
     }
-
 }

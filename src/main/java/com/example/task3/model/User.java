@@ -1,35 +1,34 @@
 package com.example.task3.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
 
     private String username;
     private String mail;
-    private int date;
+    private LocalDate date;
 
-    public User(String username, String mail, int date) {
+    public User() {};
+
+    public User(String username, String mail, LocalDate date) {
         this.username = username;
         this.mail = mail;
         this.date = date;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    private void setId(int id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
     public String getUsername() {
         return username;
@@ -47,11 +46,13 @@ public class User {
         this.mail = mail;
     }
 
-    public int getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
+
+
 }
